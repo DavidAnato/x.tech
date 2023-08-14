@@ -1,0 +1,127 @@
+    <!-- Footer -->
+    <footer class="text-center text-lg-start text-muted mx-0" style="background-color: rgb(247, 246, 247); width: 100%;">
+        <!-- Section: Social media -->
+        <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+          <!-- Left -->
+          <div class="m-2 me-5 d-none d-lg-block">
+             <span> Restez connecté avec nous via les réseaux sociaux :</span>
+          </div>
+          <!-- Left -->
+      
+          <!-- Right -->
+          <div>
+            <a href="" class="me-4 link-primary p-3" style="font-size: xx-large;">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="https://wa.me/22956543880" class="me-4 link-success p-3" style="font-size: xx-large;">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
+          <!-- Right -->
+        </section>
+        <!-- Section: Social media -->
+      
+        <!-- Section: Links  -->
+        <section class="">
+          <div class="container text-center text-md-start mt-5">
+            <!-- Grid row -->
+            <div class="row mt-3">
+              <!-- Grid column -->
+              <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                <!-- Content -->
+                <h6 class="text-uppercase fw-bold mb-4">
+                  <i class="fas fa-gem me-3 text-secondary"></i> X-FLASH TECHNOLOGIE
+                </h6>
+                <p id="p">
+                    Nous offrons une variété de produits comprenant des ordinateurs, des accessoires informatiques et des accessoires de jeux pour répondre à tous vos besoins en la matière.
+                </p>
+              </div>
+              <!-- Grid column -->
+      
+              <!-- Grid column -->
+              <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+                <!-- Links -->
+                <h6 class="text-uppercase fw-bold mb-4">
+                  Produits
+                </h6>
+                <p>
+                  <a href="/produit/?item-name=Ordinateur" class="text-reset">Ordinateurs</a>
+                </p>
+                <p>
+                  <a href="/produit/?item-name=Gaming" class="text-reset">Gaming</a>
+                </p>
+                <p>
+                  <a href="/produit/?item-name=Accessoires" class="text-reset">Accessoires</a>
+                </p>
+                <p>
+                  <a href="/produit/?item-name=Stockages" class="text-reset">Stockages</a>
+                </p>
+              </div>
+              <!-- Grid column -->
+      
+              <!-- Grid column -->
+              <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                <!-- Links -->
+                <h6 class="text-uppercase fw-bold mb-4">
+                  Nos services
+                </h6>
+                <p>
+                  <a href="#!" class="text-reset">Vente</a>
+                </p>
+                <p>
+                  <a href="#!" class="text-reset">Maintenance</a>
+                </p>
+                <p>
+                  <a href="#!" class="text-reset">Installation</a>
+                </p>
+                <p>
+                  <a href="{% url 'comments' %}" class="text-reset">Commentaires</a>
+                </p>
+              </div>
+              <!-- Grid column -->
+      
+             <!-- Grid column -->
+              <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                <!-- Links -->
+                <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
+                <p>
+                  <i class="fas fa-envelope me-3 text-secondary"></i>
+                  info@xflash.com
+                </p>
+                <p><i class="fas fa-phone me-3 text-secondary"></i> + 229 56 54 38 80</p>
+                <p><i class="fab fa-whatsapp me-3 text-secondary"></i> + 229 56 54 38 80</p>
+                {% if user.is_staff %}
+                <p><a href="{% url 'admin:index' %} " class="text-reset"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
+                  <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Zm9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382l.045-.148ZM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z"/>
+                </svg> Administration</a></p>
+                {% endif %}
+              </div>
+              <!-- Grid column -->
+
+            </div>
+            <!-- Grid row -->
+          </div>
+        </section>
+        <!-- Section: Links  -->
+        <!-- Copyright -->
+        <div class="text-center text-light p-4" style="background-color: rgba(0, 0, 0, 0.35);">
+            Copyright © 2023 
+          <a class="text-reset fw-bold" href="{% url 'home' %}">X-TECH</a>
+        </div>
+        <!-- Copyright -->
+      </footer>
+      <!-- Footer -->
+      <style>
+        #p{
+          font-size: calc(12px + 0.2vw);
+          /* text-align: justify; */
+          padding: 0 5px;
+        }
+        footer{
+            margin-top: 10px;
+        }
+        footer p:hover{
+            color: #007bff;
+        }
+      </style>
+      

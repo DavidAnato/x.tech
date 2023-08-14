@@ -1,0 +1,17 @@
+{% extends 'admin/base.html' %}
+{% block title %}X-TECH ADMIN{% endblock %}
+{% block extrahead %}
+<link rel="icon" href="/static/logo.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"><script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<style>
+    *{
+        font-family: 'century gothic';
+    }
+    table{
+        color: #8a8a8a;
+    }
+</style>
+{% endblock %}
+{% block branding %}
+<h1 id="site-name" style="font-weight: bold; font-family: 'century gothic';"><a href="{% url 'admin:index' %}">X-FLASH TECHNOLOGIE</a></h1>
+{% endblock %}

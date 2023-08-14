@@ -1,0 +1,444 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+<style>
+    a:hover{
+    text-decoration: none;
+  }
+</style>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Popper JS -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<div class="container">
+  {% if panier_products|length == 0 %}
+    <button type="submit" onclick="showScreenshotsModal()" class="btn-link m-2" style="background-color: rgba(255, 255, 255, 0); border: 0px; width: 100%; text-align: right;"><h4 class="font-weight-bold">Historique des commandes</h4></button>
+    <div id="panier" class="bg-light mt-2 disabled">
+      <div class="card ">
+    <h3 class="font-weight-bold text-center p-2">Panier <i class="fas fa-shopping-cart"></i></h3>
+      <div class="bg-primary text-center text-light font-weight-bold">
+       <h4 class="m-4 p-2">Panier vide</h4>
+      </div>
+  </div>
+    </div>
+
+  {% else %}
+    <button type="submit" onclick="showScreenshotsModal()" class="btn-link m-2" style="background-color: rgba(255, 255, 255, 0); border: 0px; width: 100%; text-align: right;"><h6 class="font-weight-bold">Historique des commandes</h6></button>
+    <div id="panier" class="bg-light mt-2">
+    <div class="card w-100">
+    <table class="table w-100">
+    <h3 class="font-weight-bold text-center p-2">Panier <i class="fas fa-shopping-cart"></i></h3>
+      <thead class="bg-primary text-white font-weight-bold">
+        <tr>
+          <th scope="col">Produit</th>
+          <th scope="col">Quantité</th>
+          <th scope="col">Prix</th>
+          <th scope="col">Somme</th>
+          <th scope="col">Retirer</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in panier_products %}
+        <tr id="{{ product.id }}">
+          <td><a href="../{{product.id}}">{{ product.title }}</a></td>
+          <td>
+            <input id="qty{{product.id}}" type="number" min=1 class="form-control qty-input" value="{{ product.qty }}"  onchange="calculateSum()" required>
+          </td>
+          <td>
+                {{ product.prix }} F CFA
+        </td>
+        <td class="sum"> F CFA</td>
+          <td>
+            <button type="button" class="btn btn-danger" onclick="removeFromCart('{{ product.id }}')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-x-fill" viewBox="0 0 16 16">
+              <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7.354 5.646 8.5 6.793l1.146-1.147a.5.5 0 0 1 .708.708L9.207 7.5l1.147 1.146a.5.5 0 0 1-.708.708L8.5 8.207 7.354 9.354a.5.5 0 1 1-.708-.708L7.793 7.5 6.646 6.354a.5.5 0 1 1 .708-.708z"/>
+            </svg></button>
+          </td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td colspan="2">
+            <input type="text" id="promoCode" placeholder="Entrez un code promo" onchange="calculateSum()">
+          </td>
+          <td>
+            <button class="btn btn-primary" id="tt" style="font-size: calc(6px + 0.5vw)" onclick="calculateSum()">
+              <span> Valider le code promo</span>
+              
+            </button>
+          </td>
+          <td colspan="2">
+            <span id="total">Total: </span>
+          </td>
+        </tr>          
+      </tbody>
+    </table>
+  </div>
+  <button type="button" class="btn btn-primary w-100" data-toggle="modal" data-target="#checkoutModal">Passer la Commande</button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="checkoutModalLabel">Formulaire de commande</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="mt-2" method="post" action="{% url 'order' %}" enctype="multipart/form-data" onsubmit="return validateForm();">
+          {% csrf_token %}
+          <div id="info" class="bg-light mt-2">
+            <h4 class="font-weight-bold text-center">Information du client</h4>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <input type="name" class="form-control" id="nom" name="nom" placeholder=" " required>
+                <label for="nom" id="nom-label" class="form-label">Nom</label>
+                <div id="nom-error" style="color: red; font-size: x-small; font-weight: normal;"></div>
+              </div>
+              <div class="form-group col-md-6">
+                <input type="name" class="form-control" id="prenoms" name="prenoms" placeholder=" " required >
+                <label for="prenoms" id="prenoms-label" class="form-label">Prenoms</label>
+                <div id="prenoms-error" style="color: red; font-size: x-small; font-weight: normal;"></div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <input type="email" class="form-control" id="email" name="email" placeholder=" ">
+                <label for="email" class="form-label">Email</label>
+              </div>
+              <div class="form-group col-md-6">
+              <input type="tel" class="form-control" id="whatsapp" name="whatsapp" placeholder=" " required >
+              <label for="whatsapp" id="whatsapp-label" class="form-label">Numero Whatsapp</label>
+              <div id="whatsapp-error" style="color: red; font-size: x-small; font-weight: normal;"></div>
+              </div>
+              </div>
+              <div class="form-group">
+              <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+              <label for="address" id="address-label" class="form-label">Address</label>
+              <div id="address-error" style="color: red; font-size: x-small; font-weight: normal;"></div>
+              </div>
+              <div style="display:none;" class="form-group">
+              <input type="url" class="form-control" id="screenshot" name="screenshot" placeholder="Appuyer sur le bouton total pour remplir ce champ" required>
+              <label for="screenshot" class="form-label">Url de la commande</label>
+              </div>
+              <div class="form-group">
+              <button type="submit" onclick="saveToLocalStorage()" class="btn btn-primary" style="width: 100%">Valider</button>
+              </div>
+              
+                </div>
+              </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function validateForm() {
+    var nom = document.getElementById("nom").value;
+    var prenoms = document.getElementById("prenoms").value;
+    var whatsapp = document.getElementById("whatsapp").value;
+    var address = document.getElementById("address").value;
+    var nomPattern = /^[+0-9\s]+$/;
+    var whatsappPattern = /^[+0-9\s]+$/;
+    var errors = false;
+    
+    if (nomPattern.test(nom)) {
+      document.getElementById("nom-error").innerHTML = "Veuillez entrer un nom valide.";
+      errors = true;
+    } else {
+      document.getElementById("nom-error").innerHTML = "";
+    }
+    
+    if (nomPattern.test(prenoms)) {
+      document.getElementById("prenoms-error").innerHTML = "Veuillez entrer de prénoms valides.";
+      errors = true;
+    } else {
+      document.getElementById("prenoms-error").innerHTML = "";
+    }
+    
+    if (!whatsappPattern.test(whatsapp)) {
+      document.getElementById("whatsapp-error").innerHTML = "Veuillez entrer un numéro valide.";
+      errors = true;
+    } else {
+      document.getElementById("whatsapp-error").innerHTML = "";
+    }
+    
+    if (address.trim() == "") {
+      document.getElementById("address-error").innerHTML = "L'adresse est obligatoire.";
+      errors = true;
+    } else {
+      document.getElementById("address-error").innerHTML = "";
+    }
+    
+    return !errors;
+  }
+</script>
+
+  {% endif %}
+</div>
+
+<table style="display: none;">
+  <thead>
+    <tr>
+      <th>Code Promo</th>
+      <th>Réduction</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for promo in codes %}
+      <tr data-code="{{ promo.code }}" data-reduction="{{ promo.reduction }}">
+        <td>{{ promo.code }}</td>
+        <td>{{ promo.reduction }}</td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="2">Aucun code promo disponible.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<style>
+
+/* Style pour le titre de la fenêtre popup */
+.modal-header {
+  background-color: #007bff;
+  color: #fff;
+  border-bottom: none;
+}
+
+/* Style pour le bouton de fermeture de la fenêtre popup */
+.close {
+  color: #fff;
+  opacity: 1;
+}
+
+/* Style pour le corps de la fenêtre popup */
+.modal-body {
+  padding: 20px;
+}
+
+/* Style pour le formulaire */
+.form-group {
+  position: relative;
+}
+
+.form-label {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: 400;
+  color: #999;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus ~ .form-label,
+.form-control:not(:placeholder-shown) ~ .form-label {
+  top: 0;
+  font-size: 12px;
+  color: #007bff;
+}
+
+.form-control {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 8px 15px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+textarea.form-control {
+  resize: none;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: none;
+}
+
+.form-control:focus ~ .form-label,
+.form-control:not(:placeholder-shown) ~ .form-label {
+  top: 0;
+  font-size: 12px;
+  color: #007bff;
+}
+
+
+</style>
+<!-- Modal HTML -->
+<div id="screenshotsModal" class="modal fade">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Historique des commandes
+        </h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+function saveToLocalStorage() {
+  var screenshot = document.getElementById("screenshot").value;
+  
+  // Récupérer les données existantes du Local Storage
+  var data = JSON.parse(localStorage.getItem("screenshots")) || {};
+  
+  // Créer un objet temporaire pour stocker les valeurs existantes
+  var temp = {};
+  
+  // Ajouter une entrée avec la date actuelle en tant que clé
+  var date = new Date();
+  date.setTime(date.getTime() + (date.getTimezoneOffset() * 60 * 1000) + (3600000 * 1));
+  var dateStr = date.toLocaleDateString("fr-FR", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  temp[dateStr] = screenshot;
+  
+  // Ajouter les autres entrées existantes à l'objet temporaire
+  for (var key in data) {
+    temp[key] = data[key];
+  }
+  
+  // Enregistrer les données mises à jour dans le Local Storage
+  localStorage.setItem("screenshots", JSON.stringify(temp));
+}
+
+function showScreenshotsModal() {
+  // Récupérer les données du Local Storage
+  var data = JSON.parse(localStorage.getItem("screenshots"));
+  
+  // Créer un conteneur pour les images
+  var container = document.createElement("div");
+  container.style.overflowY = "scroll";
+  container.style.maxHeight = "500px";
+  
+  // Boucle sur les entrées du dictionnaire et affiche chaque image
+  for (var date in data) {
+    var screenshot = data[date];
+    
+    // Créer un élément img pour chaque image
+    var img = document.createElement("img");
+    img.src = screenshot;
+    img.style.width = "100%";
+    // img.style.marginBottom = "0px";
+    
+    // Créer un élément pour le titre de l'image
+    var title = document.createElement("p");
+    title.innerText = date;
+    title.style.textAlign = "center";
+    
+    // Ajouter l'image et le titre au conteneur
+    container.appendChild(title);
+    container.appendChild(img);
+
+    // Ajouter un trait de séparation
+    var hr = document.createElement("hr");
+    container.appendChild(hr);
+  }
+  
+  // Afficher le conteneur dans une fenêtre modale Bootstrap
+  $("#screenshotsModal .modal-body").html(container);
+  $("#screenshotsModal").modal();
+}
+
+</script>
+
+
+{% include "shop/footer.html" %}
+
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+  
+  function calculateSum() {
+  var table = document.getElementsByClassName("table")[0];
+  var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+  var total = 0;
+  var promo = document.getElementById("promoCode").value;
+
+  for (var i = 0; i < rows.length - 1; i++) {
+    var qty = parseInt(rows[i].getElementsByClassName("qty-input")[0].value);
+    var price = parseFloat(rows[i].getElementsByTagName("td")[2].innerHTML.replace(" F CFA", "").replace(",", "."));
+    total += qty * price;
+    rows[i].getElementsByTagName("td")[3].innerHTML = (qty * price).toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " F CFA";
+  }
+
+  var promoTotal = total;
+  var promoApplied = false;
+  var tableRows = document.querySelectorAll("tbody tr");
+  tableRows.forEach(function(row) {
+    var promoCode = row.getAttribute("data-code");
+    var promoReduction = parseFloat(row.getAttribute("data-reduction"));
+    if (promoCode === promo) {
+      promoTotal =total - (promoReduction / 100) * total;
+      promoApplied = true;
+    }
+  });
+
+
+  if (promoApplied) {
+    document.getElementById("total").innerHTML = "<span style='text-decoration: line-through;'>Total: " + total.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " F CFA</span><br/> Total promo: " + promoTotal.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " F CFA";
+  } else {
+    document.getElementById("total").innerHTML = "Total: " + total.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " F CFA";
+  }
+
+  var promoCodeCell = document.getElementById("promoCode").parentNode.parentNode;
+  if (promo !== "" && !promoApplied) {
+    promoCodeCell.getElementsByTagName("td")[1].innerHTML = "<small class='text-danger font-weight-bold'> Code promo invalide <small>";
+  } else if (promo !== "" && promoApplied) {
+    promoCodeCell.getElementsByTagName("td")[1].innerHTML = "<small class='text-success font-weight-bold'> Code promo validé <small>";
+  } else {
+    promoCodeCell.getElementsByTagName("td")[1].innerHTML = '<button class="btn btn-primary" id="tt" style="font-size: calc(6px + 0.5vw)" onclick="calculateSum()"><svg class="d-block d-md-none"  xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg><span class="d-none d-md-block">Valider le code promo</span></button>';
+  }
+
+  var panier = document.getElementById("panier");
+  panier.style.height = panier.scrollHeight + "px";
+
+  html2canvas(panier).then(function(canvas) {
+    var screenshot = canvas.toDataURL();
+    document.getElementById("screenshot").value = screenshot;
+  });
+}
+
+
+
+function removeFromCart(id) {
+  $.ajax({
+    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    url: '{% url "remove_from_panier" 0 %}'.replace('0', id),
+    type: 'DELETE',
+    success: function(result) {
+      // Mettre à jour l'affichage du panier
+      // Par exemple, en rechargant le contenu de la div qui contient le panier
+      $('#panier').load(document.URL +  ' #panier');
+    },
+    error: function(xhr, status, error) {
+      console.error(error);
+    }
+  });
+
+    }
+
+
+  </script>
+
+{% endblock %}

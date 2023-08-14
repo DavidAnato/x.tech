@@ -1,0 +1,236 @@
+{% extends "shop/base.html "%}
+
+{% block content %}
+    <style>
+        #img {
+            background-image: url("media/{{ product.image }}");
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center;
+            font-family: "Century Gothic";
+            height: calc(300px + 10vw);
+            width: 100%;
+         }
+
+    </style>
+    <div class="row m-4">
+        <div class="col-md-4">
+            <div>
+                <div id="img"></div>
+            </div>
+        </div>
+        <div class="col-md-8 ">
+            <div class="text-primary" style="font-size:40px; padding-top: 20px;">
+                {{ product.title }}
+            </div>
+            {% if product.prix_promo %}
+            <div style="margin-bottom: 8px;">
+                <div style=" color: orange; text-decoration: line-through red; display: inline-block;">{{ product.prix }} F CFA</div>
+                <div style=" font-size: 18px; color: green; margin-left: 10px; font-weight: bold; display: inline-block;" class="card-text">{{ product.prix_promo }} F CFA</div>
+            </div>
+            {% else %}
+                <div style="color: orange; margin-bottom: 10px;" class="card-text">{{ product.prix }} F CFA</div>
+            {% endif %}
+            <div >
+                <p>{{ product.description|linebreaks }}</p>
+            </div>
+            <button id="add" class="btn ted btn-primary" onclick="ajouterAuPanier('{{ product.id }}')" >
+              <span class="text">Ajouter au Panier</span>
+              <i class="fas fa-cart-plus"></i>
+            </button>  
+            <a id="allerAuPanier{{ product.id }}" href="{% url 'panier' %}" class="btn ted btn-warning d-none">
+              <span class="text">Aller au panier</span>
+              <i class="fas fa-shopping-cart"></i>
+            </a>            
+          </div>
+    </div>
+    {% if product.other_images.all %}
+    <div class="container my-5">
+        <div class="row">
+          <div class="col-12">
+            <div class="d-flex align-items-center justify-content-center" style="min-height: 300px;">
+                <div class="other-images ">
+                    {% for image in product.other_images.all %}
+                      <a href="{{ image.image.url }}" class="popup-image">
+                        <img src="{{ image.image.url }}" alt="{{ product.title }} - autre image" >
+                      </a>
+                    {% endfor %}
+                  </div>
+                    <button class="scroll-arrow left-arrow scroll-btn ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                    </button>
+                    <button class="scroll-arrow right-arrow scroll-btn ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                          </svg>
+                    </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      <style>
+
+.btn.ted {
+  position: relative;
+  display: inline-block;
+}
+
+.btn.ted span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
+.btn.ted i {
+  position: absolute;
+  right: -30px;
+  opacity: 0;
+  transition: all 0.3s ease-out;
+}
+
+.btn.ted:hover i {
+  right: 0;
+  opacity: 1;
+  padding-right: 10px;
+  padding-top: 6px;
+}
+
+.btn.ted:hover {
+  padding-right: 35px;
+}
+
+        .other-images {
+          display: flex;
+          position: relative;
+          overflow-x: scroll;
+          border-radius: 10px ;
+        }
+        
+        .other-images a img {
+          border-radius: 10px;
+          margin-right: 16px;
+          height: 300px;
+          object-fit: center;
+        }
+      
+        .scroll-arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 36px;
+          color: #333;
+          cursor: pointer;
+        }
+      
+        .left-arrow {
+          left: -12px;
+        }
+      
+        .right-arrow {
+          right: -12px;
+        }
+      
+        .left-arrow.hidden {
+          display: none;
+        }
+      
+        .right-arrow.hidden {
+          display: none;
+        }
+        .scroll-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            padding-bottom: 0;
+            /* font-size: 24px; */
+            line-height: 10px;
+            text-align: center;
+            color: rgb(255, 255, 255);
+            background-color: rgba(41, 40, 40, 0.5);
+            border: rgba(255, 255, 255, 0);
+        }
+        .scroll-btn:hover{
+            
+            color: rgb(255, 255, 255);
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+      </style>
+      <script>
+        const otherImages = document.querySelector('.other-images');
+        const leftArrow = document.querySelector('.left-arrow');
+        const rightArrow = document.querySelector('.right-arrow');
+      
+        otherImages.addEventListener('scroll', function () {
+          if (otherImages.scrollLeft > 0) {
+            leftArrow.classList.remove('hidden');
+          } else {
+            leftArrow.classList.add('hidden');
+          }
+      
+          if (otherImages.scrollLeft + otherImages.offsetWidth < otherImages.scrollWidth) {
+            rightArrow.classList.remove('hidden');
+          } else {
+            rightArrow.classList.add('hidden');
+          }
+        });
+      
+        leftArrow.addEventListener('click', function () {
+          otherImages.scrollTo({
+            left: otherImages.scrollLeft - otherImages.offsetWidth,
+            behavior: 'smooth'
+          });
+        });
+      
+        rightArrow.addEventListener('click', function () {
+          otherImages.scrollTo({
+            left: otherImages.scrollLeft + otherImages.offsetWidth,
+            behavior: 'smooth'
+          });
+        });
+      </script>
+      
+      {% include "shop/footer.html" %}
+    
+{% endblock %}
+
+{% block js %}
+    <script>
+        // Récupération du panier depuis le stockage de navigateur
+        var panier = JSON.parse(localStorage.getItem('panier')) || {};
+    
+        // Fonction pour ajouter un produit au panier
+        function ajouterAuPanier(productId) {
+          // Envoi de la requête AJAX pour ajouter le produit au panier
+          $.ajax({
+              url: '/panier/add/' + productId + '/',
+              type: 'POST',
+              data: {
+                  'product_id': productId,
+                  'quantity': 1,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+              },
+              success: function (response) {
+                  $("#" + productId).prop("disabled", true);
+                  $("#allerAuPanier" + productId).removeClass("d-none");
+                  // Cache le bouton
+                  $("#add").hide();
+              }
+          });
+      }
+        
+    </script>
+    <script>
+        $(document).ready(function() {
+          $('.popup-image').magnificPopup({
+            type: 'image',
+            gallery:{
+              enabled:true
+            }
+          });
+        });
+        </script>
+        
+{% endblock %}

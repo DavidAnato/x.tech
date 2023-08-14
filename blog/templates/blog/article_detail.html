@@ -1,0 +1,131 @@
+{% extends "shop/base.html" %}
+{% load humanize %}
+
+{% block content %}
+  <style>
+    .full-content {
+      display: none;
+  }
+  </style>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8">
+        <h2 class="my-4 m-4" style="font-size: calc(20px + 1vw)">{{ article.titre }}</h2>
+        <div class="card mb-4 box-shadow">
+          <div style="background: url('{{ article.image.url }}') center no-repeat; height: calc(150px + 15vw); background-size: cover;"></div>
+          <div class="card-body">
+            <p class="card-text text-muted" style="font-size: 18px;">
+              <span class="short-content">{{ article.contenu |slice:":1000"|linebreaksbr }}...</span>
+              <span class="full-content">{{ article.contenu |linebreaksbr }}</span>
+              <a href="#" class="show-more-link">Voir plus</a>
+          </p>          
+          </div>
+          <div class="card-footer text-muted">
+            <div class="row">
+              <div class="col-md-6">
+                <p>Catégorie : {{ article.categorie }}</p>
+                <p>Date de création : {{ article.date_creation|date:"d N Y - H:i" }}</p>
+              </div>
+              <div class="col-md-6">
+                <!-- <p>Nombre de vues : {{ nb_vues }}</p> -->
+                <p>Auteur : {{ article.auteur }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h3 class="my-4 m-4">Commentaires</h3>
+        <div id="commentaires-container">
+          {% if commentaires %}
+            {% for commentaire in commentaires|slice:":3" %}
+              <div class="card mb-4">
+                <div class="card-body">
+                  <p class="card-text">{{ commentaire.contenu|linebreaksbr }}</p>
+                </div>
+                <div class="card-footer text-muted">
+                  <small>Par : {{ commentaire.auteur }} le {{ commentaire.date_creation|date:"d N Y - H:i" }}</small>
+                </div>
+              </div>
+            {% endfor %}
+            {% if commentaires|length > 3 %}
+              <div id="voir-plus-div" class="text-center">
+                <a id="voir-plus-link" href="#">Voir tous les commentaires</a>
+              </div>
+            {% endif %}
+          {% else %}
+            <p>Aucun commentaire pour cet article.</p>
+          {% endif %}
+        </div>
+        <form method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="auteur"></label>
+            <label for="contenu">Ajouter un commentaire :</label>
+            <input type="text" class="form-control mb-2" id="auteur" name="auteur" placeholder="Votre nom" required autocomplete="name">
+            <textarea class="form-control" id="contenu" name="contenu" rows="3" placeholder="Votre commentaire" required autocomplete="comment"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Envoyer</button>
+        </form>        
+      </div>
+
+      
+      <div class="col-md-4">
+        <h3 class="my-4 m-4">Articles récents</h3>
+        <div class="list-group mb-4">
+          {% for article in articles_recents|slice:":5" %}
+            <div class="col-md">
+              <div class="card mb-4 box-shadow" >
+                <h5 class="card-title m-3" style="font-size: calc(16px + 0.3vw); font-weight: bold;">{{ article.titre }}</h5>
+                <a href="{% url 'article_detail' article.id %}" style="background: url('{{ article.image.url }}') center no-repeat; height: 150px; background-size: cover;"></a>
+                <div class="card-body">
+                  <p class="card-text text-muted" >{{ article.contenu|truncatechars:80 }}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <a href="{% url 'article_detail' article.id %}" class="btn btn-sm btn-primary">Voir</a>
+                    </div>
+                    <small class="text-muted">{{ article.date_creation|date:"d N Y - H:i" }}</small>
+                  </div>
+                  <!-- <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">{{ article.categorie }} | Par : {{ article.auteur }}</small>
+                    {% if article.nb_vues < 2 %}
+                    <small class=" text-primary">{{ article.nb_vues}} vue</i></small>
+                    {% else %}
+                    <small class=" text-primary">{{ article.nb_vues}} vues</i></small>
+                    {% endif %}
+                  </div> -->
+                </div>
+
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var voirPlusLink = document.getElementById('voir-plus-link');
+    var voirPlusDiv = document.getElementById('voir-plus-div')
+    if (voirPlusLink) {
+      const commentairesContainer = document.getElementById('commentaires-container');
+      voirPlusLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        commentairesContainer.innerHTML += '{% for commentaire in commentaires|slice:"5:" %}<div class="card mb-4"><div class="card-body"><p class="card-text">{{ commentaire.contenu|linebreaksbr }}</p></div><div class="card-footer text-muted"><small>Par : {{ commentaire.auteur }} le {{ commentaire.date_creation|date:"d N Y - H:i" }}</small></div></div>{% endfor %}';
+        voirPlusLink.style.display = 'none';
+        voirPlusDiv.style.display = 'none'
+      });
+    }
+
+    var showMoreLink = document.querySelector('.show-more-link');
+    var shortContent = document.querySelector('.short-content');
+    var fullContent = document.querySelector('.full-content');
+
+    showMoreLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        shortContent.style.display = 'none';
+        showMoreLink.style.display = 'none';
+        fullContent.style.display = 'inline';
+    });
+  </script>
+  
+  {% include "shop/footer.html" %}
+{% endblock %}

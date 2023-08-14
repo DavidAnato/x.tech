@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css" rel="stylesheet">
+	<link href='https://fonts.googleapis.com/css?family=Century Gothic' rel='stylesheet'>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/magnific-popup.css" integrity="sha512-4a1cMhe/aUH16AEYAveWIJFFyebDjy5LQXr/J/08dc0btKQynlrwcmLrij0Hje8EWF6ToHCEAllhvGYaZqm+OA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/magnific-popup.min.css" integrity="sha512-nIm/JGUwrzblLex/meoxJSPdAKQOe2bLhnrZ81g5Jbh519z8GFJIWu87WAhBH+RAyGbM4+U3S2h+kL5JoV6/wA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+	
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" contents="ie=edge">
+	<title>X-TECH</title>
+    <link rel="icon" href="/static/logo.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/static/logo.ico" type="image/x-icon">
+	<style>
+		*{
+			font-family: 'century gothic';
+		}
+		nav .nav-link {
+			position: relative;
+			text-decoration: none;
+			font-weight: normal;
+		}
+
+		@media (max-width: 991.98px) {
+			nav .nav-item {
+				margin: 0px;
+				/* margin-top: 5px; */
+		  	}
+			  #card {
+				margin: 10px 0;
+		  	}
+		}
+
+		nav .nav-link:hover {
+			color: #007bff;
+		}
+		nav .nav-link:before {
+			content: "";
+			position: absolute;
+			width: 100%;
+			height: 2px;
+			bottom: 0;
+			left: 0;
+			background-color: #007bff;
+			visibility: hidden;
+			-webkit-transform: scaleX(0);
+			transform: scaleX(0);
+			-webkit-transition: all 0.3s ease-in-out 0s;
+			transition: all 0.3s ease-in-out 0s;
+		}
+		nav .nav-link:hover:before {
+			visibility: visible;
+			-webkit-transform: scaleX(1);
+			transform: scaleX(1);
+		}
+		nav a:hover{
+			font-weight: bold;
+		}
+		.nav-item{
+			margin: 7px;
+			text-align: center;
+		}
+
+		.btn{
+			font-weight: bold;
+		}
+
+		.product-info {
+			color: white;
+			width: 40%;
+			display: inline-block;
+			padding: 20px;
+			margin-left: 20px;
+		}
+
+		.product-name {
+			font-size: 1.5em;
+			font-weight: bold;
+		}
+
+		.product-price {
+			font-size: 1.2em;
+			color: orange;
+		}
+
+		.product-image {
+			width: 50%;
+			display: inline-block;
+		}
+		.product-image img {
+			margin-left: 10px;
+			object-fit: cover;
+			max-height: 200px;
+		}
+
+		.card {
+			animation: floating 1s ease-in-out;
+			}
+
+			@keyframes floating {
+			0% {
+				transform: translateY(0);
+			}
+			50% {
+				transform: translateY(-10px);
+			}
+			100% {
+				transform: translateY(0);
+			}
+		}
+
+		#panier h3, h1 {
+			animation: fadeIn 1s ease-in-out, floating 1s ease-in-out;
+			}
+
+			@keyframes fadeIn {
+			0% {
+				opacity: 0;
+			}
+			100% {
+				opacity: 1;
+			}
+		}
+
+		#panier{
+			font-size: calc(6px + 0.7vw);
+
+		}
+
+		#info{
+      		margin-bottom: 20px;
+			border-radius: 10px;
+			padding:20px; 
+    	}
+
+		@keyframes floating {
+		0% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
+		100% {
+			transform: translateY(0);
+		}
+		}
+
+		#nav {
+			animation: nav-down 1s ease-in-out forwards;
+			opacity: 0;
+			transform: translateY(-100%);
+		}
+
+		@keyframes nav-down {
+			0% {
+				opacity: 0;
+				transform: translateY(-100%);
+			}
+			100% {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+
+		#social{
+			/* padding-left: calc(90px + 20vw); */
+			/* padding-top: 10px;	 */
+			display: flex;
+			float: right;
+			padding-left: 50px;
+		}
+
+		.active a{
+			font-weight: bold;
+		}
+		
+	</style>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.18/jquery.touchSwipe.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js" integrity="sha512-+m6t3R87+6LdtYiCzRhC5+E0l4VQ9qIT1H9+t1wmHkMJvvUQNI5MKKb7b08WL4Kgp9K0IBgHDSLCRJk05cFUYg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.js" integrity="sha512-/jeu5pizOsnKAR+vn28EbhN5jDSPTTfRzlHZh8qSqB77ckQd3cOyzCG9zo20+O7ZOywiguSe+0ud+8HQMgHH9A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body style="font-family: 'Century Gothic'; font-weight: bold;" onload="calculateSum()">
+	<div class="container-fluid">
+		<div class="row ">
+			<div id="header" style="width: 100%;">
+				<nav id="nav" class="navbar navbar-expand-lg navbar-light bg-light">
+					<a id="logo" class="navbar-brand" href="{% url 'home' %}">
+					  <img style="height: 80px; width: 100px;" src="/static/logo.png">
+					</a>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					  <span class="navbar-toggler-icon"></span>
+					</button>    
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					  <ul class="navbar-nav mr-auto">
+						<li class="nav-item {% if request.path == '/' %}active{% endif %}">
+						  <a class="nav-link" style="font-size: large;" href="{% url 'home' %}">Acceuil<span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item {% if request.path == '/produit/' %}active{% endif %}">
+						  <a class="nav-link" style="font-size: large;" href="{% url 'produit' %}">Boutique</a>
+						</li>
+						<li class="nav-item {% if request.path == '/nos_service/' %}active{% endif %}">
+						  <a class="nav-link" style="font-size: large;" href="{% url 'service' %}">Nos services</a>
+						</li>
+						<li class="nav-item {% if request.path == '/blog/' %}active{% endif %}">
+						  <a class="nav-link" style="font-size: large;" href="{% url 'articles' %}">Blog</a>
+						</li>
+					  </ul>
+					  <ul class="navbar-nav ml-auto align-items-center">
+						<li class="nav-item w-100">
+						  <a href="{% url 'panier' %}" id="card" style="color:aliceblue; font-weight: bold; font-size: large;" class="nav-link btn btn-primary w-100">
+							<i class="fas fa-shopping-cart"></i> Panier
+						  </a>
+						</li>
+						<li class="nav-item d-none d-md-block">
+						  <div class="d-flex flex-row align-items-center card p-1">
+							<p class="m-0 me-2 m-2">Contact:</p>
+							<a href="" class="me-4 text-primary p-0 ml-3 mr-3" style="font-size: x-large;">
+							  <i class="fab fa-facebook"></i>
+							</a>
+							<a href="https://wa.me/22956543880" class="me-4 text-success p-0 ml-3 mr-3"  style="font-size: x-large;">
+							  <i class="fab fa-whatsapp"></i>
+							</a>
+							<a href="tel:+22956543880" class="text-dark p-0 ml-3 mr-3"  style="font-size: x-large;">
+							  <i class="fas fa-phone"></i>
+							</a>
+						  </div>
+						</li>
+						<li class="nav-item d-block d-md-none">
+						  <div class="d-flex flex-row justify-content-center align-items-center">
+							<a href="" class="me-4 text-primary p-0 ml-3 mr-3" style="font-size: x-large;">
+							  <i class="fab fa-facebook"></i>
+							</a>
+							<a href="https://wa.me/22956543880" class="me-4 text-success p-0 ml-3 mr-3" style="font-size: x-large;">
+							  <i class="fab fa-whatsapp"></i>
+							</a>
+							  <a href="tel:+22956543880" class="text-dark p-0 ml-3 mr-3" style="font-size: x-large;">
+								<i class="fas fa-phone"></i>
+							  </a>
+							</div>
+						  </li>
+						</ul>
+					  <a id="logo" class="navbar-brand" style=" border: rgba(128, 128, 128, 0.5) solid 1px; border-radius: 5px; padding: 8px 14px;" href="{% url 'produit' %}#search">
+						<i class="fas fa-search text-secondary"></i>
+					  </a>
+					</div>
+				  </nav>							
+			</div>
+		</div>
+	</div>
+	{% block js %}{% endblock %}
+	{% block content %}{% endblock %}
+
+	<a href="#" class="back-to-top">
+		<i class="fa fa-angle-up"></i>
+	  </a>
+	  
+<style>
+.back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: solid 1px rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  text-align: center;
+  font-size: 30px;
+  color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  cursor: pointer;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+.back-to-top i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.back-to-top.show {
+  display: block;
+}
+
+.back-to-top:hover {
+  border: solid 1px #007bff;
+  color: #007bff;
+  background: rgba(128, 128, 128, 0.1);
+}
+
+.back-to-top:focus {
+  outline: none;
+}
+
+.back-to-top.animate {
+  -webkit-animation: bounce 2s infinite;
+  animation: bounce 2s infinite;
+}
+
+@-webkit-keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    -webkit-transform: translateY(0);
+  }
+  40% {
+    -webkit-transform: translateY(-30px);
+  }
+  60% {
+    -webkit-transform: translateY(-15px);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+</style>
+
+<script>
+$(document).ready(function() {
+  // afficher ou masquer le bouton en fonction de la position de défilement de la page
+  $(window).scroll(function() {
+    if ($(this).scrollTop() > 100) {
+      $('.back-to-top').addClass('show');
+    } else {
+      $('.back-to-top').removeClass('show');
+    }
+  });
+
+  // faire défiler la page vers le haut lorsque le bouton est cliqué
+  $('.back-to-top').click(function(e) {
+    e.preventDefault();
+    $('html, body').animate({scrollTop: 0}, '300');
+  });
+
+  // animer le bouton lorsqu'il est survolé ou cliqué
+  $('.back-to-top').hover(function() {
+    $(this).addClass('animate');
+  }, function() {
+    $(this).removeClass('animate');
+  });
+});
+</script>
+
+
+	</body>
+</html>

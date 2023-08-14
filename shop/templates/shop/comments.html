@@ -1,0 +1,296 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+
+<!-- Affichage des commentaires existants -->
+<div class="container">
+  {% if commentaires %}
+  <h3>Commentaires</h3>
+  {% for commentaire in commentaires|slice:":5" %}
+    <div class="card my-3 bg-light">
+      <div class="card-body">
+        <div class="media">
+          {% if commentaire.photo %}
+            <img src="{{ commentaire.photo.url }}" style="background-color: rgb(60, 95, 125); width: calc(40px + 2vw); height: calc(40px + 2vw);" class="mr-3 rounded-circle" alt="{{ commentaire.nom }}">
+          {% else %}
+            <div class="mr-3 bg-secondary text-white rounded-circle" style="width: 64px; height: 64px; text-align: center; line-height: 64px;">
+              {{ commentaire.nom|first|upper }}
+            </div>
+          {% endif %}
+          <div class="media-body">
+            <h5 class="mt-0">{{ commentaire.nom }}</h5>
+            {% if commentaire.commentaire %}
+            <div class="commentaire">
+              <p class=" font-weight-normal mb-0">{{ commentaire.commentaire|truncatewords:20 }}</p>
+              {% if commentaire.commentaire|length > 20 %}
+                <a href="#" class="afficher-plus" style="margin: 0px;">Afficher plus</a>
+                <p class="font-weight-normal d-none">{{ commentaire.commentaire }}</p>
+              {% endif %}
+            </div>
+          {% endif %}
+            {% if commentaire.note %}
+              <div class="d-flex mt-1">
+                <div class="mr-2">
+                  {% for i in "12345" %}
+                  {% if i|add:0.0 <= commentaire.note %}
+                  <i class="fas fa-star text-warning"></i>
+                    {% else %}
+                      <i class="far fa-star text-warning"></i>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <div>
+                  {{ commentaire.note }} / 5
+                </div>
+              </div>
+              {% if commentaire.admin_reponse %}
+              <div class="card p-3" style="display: flex; align-items: justify;">
+                <h5 class="mt-0">Réponse</h5>
+                {% if commentaire.admin_reponse %}
+                <div class="commentaire">
+                  <p class="font-weight-normal"> <p class="text-justify font-weight-normal"> <img src="/static/logo2.png" style="background-color: rgba(0, 0, 0, 0.1); border: #007bff solid 2px ; width: calc(10px + 2vw); display: inline-block;" class="mr-3 rounded-circle">{{ commentaire.admin_reponse|truncatewords:20 }}</p>
+                  {% if commentaire.admin_reponse|length > 20 %}
+                    <a href="#" class="afficher-plus">Afficher plus</a>
+                    <p class=" font-weight-normal d-none"><p class="text-justify font-weight-normal"> <img src="/static/logo2.png" style="background-color: rgba(0, 0, 0, 0.1); border: #007bff solid 2px ; width: calc(10px + 2vw); display: inline-block;" class="mr-3 rounded-circle">{{ commentaire.admin_reponse }}</p>
+                  {% endif %}
+                </div>
+              {% endif %}
+              </div>              
+              {% endif %}
+            {% endif %}
+        </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  {% if commentaires|length > 3 %}
+    <!-- afficher un bouton pour afficher les commentaires supplémentaires -->
+    <button class="btn btn-link" id="afficher-plus-commentaires" type="button">Afficher tout les commentaires</button>
+    <div id="commentaires-supplementaires" style="display: none;">
+      {% for commentaire in commentaires|slice:"5:" %}
+    <div class="card my-3 bg-light">
+      <div class="card-body">
+        <div class="media">
+          {% if commentaire.photo %}
+            <img src="{{ commentaire.photo.url }}" style="background-color: rgb(60, 95, 125); width: calc(40px + 2vw); height: calc(40px + 2vw);" class="mr-3 rounded-circle" alt="{{ commentaire.nom }}">
+          {% else %}
+            <div class="mr-3 bg-secondary text-white rounded-circle" style="width: 64px; height: 64px; text-align: center; line-height: 64px;">
+              {{ commentaire.nom|first|upper }}
+            </div>
+          {% endif %}
+          <div class="media-body">
+            <h5 class="mt-0">{{ commentaire.nom }}</h5>
+            {% if commentaire.commentaire %}
+            <div class="commentaire">
+              <p class=" font-weight-normal mb-0">{{ commentaire.commentaire|truncatewords:20 }}</p>
+              {% if commentaire.commentaire|length > 20 %}
+                <a href="#" class="afficher-plus" style="margin: 0px;">Afficher plus</a>
+                <p class="font-weight-normal d-none">{{ commentaire.commentaire }}</p>
+              {% endif %}
+            </div>
+          {% endif %}
+            {% if commentaire.note %}
+              <div class="d-flex mt-1">
+                <div class="mr-2">
+                  {% for i in "12345" %}
+                  {% if i|add:0.0 <= commentaire.note %}
+                  <i class="fas fa-star text-warning"></i>
+                    {% else %}
+                      <i class="far fa-star text-warning"></i>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <div>
+                  {{ commentaire.note }} / 5
+                </div>
+              </div>
+              {% if commentaire.admin_reponse %}
+              <div class="card p-3" style="display: flex; align-items: justify;">
+                <h5 class="mt-0">Réponse</h5>
+                {% if commentaire.admin_reponse %}
+                <div class="commentaire">
+                  <p class="font-weight-normal"> <p class="text-justify font-weight-normal"> <img src="/static/logo2.png" style="background-color: rgba(0, 0, 0, 0.1); border: #007bff solid 2px ; width: calc(10px + 2vw); display: inline-block;" class="mr-3 rounded-circle">{{ commentaire.admin_reponse|truncatewords:20 }}</p>
+                  {% if commentaire.admin_reponse|length > 20 %}
+                    <a href="#" class="afficher-plus">Afficher plus</a>
+                    <p class=" font-weight-normal d-none"><p class="text-justify font-weight-normal"> <img src="/static/logo2.png" style="background-color: rgba(0, 0, 0, 0.1); border: #007bff solid 2px ; width: calc(10px + 2vw); display: inline-block;" class="mr-3 rounded-circle">{{ commentaire.admin_reponse }}</p>
+                  {% endif %}
+                </div>
+              {% endif %}
+              </div>              
+              {% endif %}
+            {% endif %}
+        </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+    </div>
+  {% endif %}
+{% else %}
+  <p>Aucun commentaire pour le moment.</p>
+{% endif %}
+
+
+<hr>
+
+<!-- Formulaire pour ajouter un commentaire -->
+<h3>Ajouter un commentaire</h3>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="nom">Nom</label>
+      <input type="name" class="form-control" id="nom" name="nom" placeholder="Nom" required>
+      <small id="nomError" class="text-danger d-none">Le nom est invalide.</small>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="email">Adresse email</label>
+      <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+      <small id="emailError" class="text-danger d-none">L'adresse email est invalide.</small>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="numero_whatsapp">Numéro WhatsApp</label>
+      <input type="tel" class="form-control" id="numero_whatsapp" name="numero_whatsapp" placeholder="Numéro WhatsApp" required>
+      <small id="numero_whatsappError" class="text-danger d-none">Le numéro WhatsApp est invalide.</small>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="note">Note</label>
+      <div class="rating">
+        {% for i in '12345' %}
+        <style>#starnote:hover{color: orange;}</style>
+        <i class="fas fa-star star" id="starnote" style="font-size: 30px;"></i>
+        {% endfor %}
+      </div>
+      <input type="hidden" id="note" name="note" value="5">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="commentaire">Commentaire</label>
+    <textarea class="form-control" id="commentaire" name="commentaire" rows="3" placeholder="Commentaire" required></textarea>
+    <small id="commentaireError" class="text-danger d-none">Le commentaire est invalide ou contient des mots innapropriés.</small>
+  </div>
+  <div class="form-group">
+    <label for="photo">Photo</label>
+    <input type="file" class="form-control-file" id="photo" name="photo">
+  </div>
+  <button type="submit" class="btn btn-primary" >Ajouter le commentaire</button>
+</form>
+</div>
+
+<script>
+// Récupérer les éléments du formulaire
+const form = document.querySelector('form');
+const nomInput = document.querySelector('#nom');
+const emailInput = document.querySelector('#email');
+const numeroInput = document.querySelector('#numero_whatsapp');
+const commentaireInput = document.querySelector('#commentaire');
+
+// Ajouter un événement de soumission du formulaire
+form.addEventListener('submit', function(event) {
+  // Empêcher l'envoi du formulaire par défaut
+  event.preventDefault();
+  
+  // Vérifier le nom
+  const nomRegex = /^[A-Za-z.\s]+$/;
+  if (!nomRegex.test(nomInput.value)) {
+    nomInput.classList.add('border', 'border-danger');
+    document.querySelector('#nomError').classList.remove('d-none');
+  } else {
+    nomInput.classList.remove('border', 'border-danger');
+    document.querySelector('#nomError').classList.add('d-none');
+  }
+
+  // Vérifier l'email (optionnel)
+  const emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
+  if (emailInput.value && !emailRegex.test(emailInput.value)) {
+    emailInput.classList.add('border', 'border-danger');
+    document.querySelector('#emailError').classList.remove('d-none');
+  } else {
+    emailInput.classList.remove('border', 'border-danger');
+    document.querySelector('#emailError').classList.add('d-none');
+  }
+
+  // Vérifier le numéro WhatsApp
+  const numeroRegex = /^[0-9]{8,}$/;
+  if (!numeroRegex.test(numeroInput.value)) {
+    numeroInput.classList.add('border', 'border-danger');
+    document.querySelector('#numero_whatsappError').classList.remove('d-none');
+  } else {
+    numeroInput.classList.remove('border', 'border-danger');
+    document.querySelector('#numero_whatsappError').classList.add('d-none');
+  }
+
+  // Vérifier le commentaire
+  
+  const commentaireViolent = ["pute","baise", "putain", "enculé", "merde", "con", "salope", "connard", "bite", "cul", "nique","arnaque", "fraude", "contrefaçon", "escroquerie", "piratage", "virus", "spam", "phishing", "malware", "spéculation", "triche", "hameçonnage", "vol", "falsification", "faux", "défectueux", "baise", "putain", "enculé", "merde", "con", "salope", "connard", "bite", "cul", "nique", "fuck", "shit", "asshole", "dick", "cunt", "pussy", "fucker", "cocksucker", "motherfucker", "son of a bitch", "bastard", "whore", "slut", "prostitute", "faggot", "gay", "lesbian", "retard", "stupid", "idiot", "fool", "moron", "dumbass", "chink", "nigger", "spic", "kike", "jap", "raghead", "terrorist", "goatfucker", "camel jockey", "beaner", "wetback", "gringo", "white trash"];
+const commentaireRegex = new RegExp(commentaireViolent.join("|"), "gi");
+
+if (commentaireRegex.test(commentaireInput.value)) {
+  commentaireInput.classList.add('border', 'border-danger');
+  document.querySelector('#commentaireError').classList.remove('d-none');
+} else {
+  commentaireInput.classList.remove('border', 'border-danger');
+  document.querySelector('#commentaireError').classList.add('d-none');
+}
+
+
+  // Si tous les champs sont valides, soumettre le formulaire
+  if (!document.querySelector('.border-danger')) {
+    form.submit();
+  }
+});
+</script>
+
+<script>
+  $(function() {
+      // Récupération de toutes les étoiles
+      var stars = $('.star');
+      
+      // Ajout d'un événement "click" à chaque étoile
+      stars.click(function() {
+          // Récupération de l'index de l'étoile cliquée
+          var index = stars.index($(this));
+          
+          // Suppression de la classe "text-warning" de toutes les étoiles
+          stars.removeClass('text-warning');
+          
+          // Ajout de la classe "text-warning" aux étoiles ayant un index inférieur ou égal à l'index de l'étoile cliquée
+          stars.slice(0, index+1).addClass('text-warning');
+          
+          // Modification de la valeur du champ "note"
+          $('#note').val(index+1);
+      });
+  });
+</script>
+<script>
+  document.querySelectorAll('.afficher-plus').forEach(function(button) {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+      button.classList.add('d-none');
+      button.nextElementSibling.classList.remove('d-none');
+      button.closest('.commentaire').classList.add('commentaire-complete');
+    });
+  });
+</script>
+
+<style>
+  .commentaire-complete p:first-of-type {
+    display: none;
+  }
+</style>
+
+<script>
+  // gérer le clic sur le bouton pour afficher les commentaires supplémentaires
+  document.getElementById("afficher-plus-commentaires").addEventListener("click", function(event) {
+    event.preventDefault(); // empêcher le comportement par défaut du bouton
+    // afficher les commentaires supplémentaires
+    document.getElementById("commentaires-supplementaires").style.display = "block";
+    // masquer le bouton pour afficher les commentaires supplémentaires
+    this.style.display = "none";
+  });
+</script>
+{% include "shop/footer.html" %}
+
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "shop/base.html "%}
+
+{% block content %}
+
+<div class="container-fluid services-section my-5">
+    <div class="container">
+      <h1 class="services-header text-primary">Nos services</h1>
+      <hr class="bg-primary">
+      <div class="row">
+        <div class="col-md-6 left-card services-card">
+          <h3>Vente d'ordinateurs, accessoires informatiques et de jeux</h3>
+          <hr class="bg-secondary">
+          <div>
+            <p>Notre entreprise propose une large gamme d'ordinateurs de bureau et portables, ainsi que des accessoires informatiques tels que des claviers, des souris, des casques, etc. Nous proposons également des accessoires de jeu comme les PlayStation et les manettes de jeu. Nous sommes fiers de vous offrir les produits les plus récents et de la meilleure qualité pour répondre à tous vos besoins en matière de technologie.</p>
+          </div>
+          <div class="demi_l" ></div>
+        </div>
+        <div class="col-md-6 right-card services-card">
+          <h3>Maintenance informatique</h3>
+          <hr class="bg-secondary">
+          <div>
+            <p>En plus de la vente d'ordinateurs et d'accessoires technologiques, notre entreprise propose également des services de maintenance informatique pour vous aider à maintenir votre matériel en bon état de marche. Nous pouvons effectuer des réparations, des mises à jour de logiciels et des nettoyages de systèmes pour garantir un fonctionnement optimal. Contactez-nous pour en savoir plus sur nos services de maintenance informatique.</p>
+          </div>      
+          <div class="demi_r" ></div>  
+        </div>
+      </div>
+      <hr class="bg-primary">
+      <div class="row">
+        <div class="col-md-12 bottom-card services-card">
+          <h3 class="services-header">Service clientèle exceptionnel</h3>
+          <hr class="bg-secondary">
+          <p class="text-center">Notre entreprise se consacre à fournir un service clientèle exceptionnel à chaque client. Nous sommes là pour vous aider à chaque étape du processus, que ce soit pour choisir le produit qui convient le mieux à vos besoins ou pour résoudre tout problème rencontré avec votre matériel. N'hésitez pas à nous contacter pour toute question ou assistance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+    <style>  
+        h3{
+            font-weight: bold;
+        }
+        .services-header {
+          color: #333;
+          text-align: center;
+          font-size: 36px;
+          font-weight: bold;
+          margin-bottom: 20px;
+        }
+  
+        .services-header hr {
+          border-top: 2px solid #333;
+          width: 150px;
+          margin: 25px auto;
+        }
+  
+        .services-card {
+          border:  solid 1px rgba(0, 0, 0, 0.1);
+          font-weight: normal;
+          background-color: #fff;
+          border-radius: 10px;
+          box-shadow: 3px 2px 5px rgba(0, 0, 0, 0.1);
+          padding: 30px;
+          text-align: center;
+          animation-duration: 1s;
+          animation-fill-mode: both;
+        }
+        .left-card {
+          animation-name: float-left;
+          margin-top: 10px;
+        }
+  
+        .right-card {
+          animation-name: float-right;
+          margin-top: 10px;
+        }
+  
+        .bottom-card {
+          animation-name: float-bottom;
+        }
+
+        
+        .demi_l{
+            background: url("/static/vente.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;background-size: cover;
+            background-attachment: fixed;
+            height: 150px;
+            border-radius: 10px;
+        }
+
+        .demi_r{
+            background: url("/static/maintenance.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;background-size: cover;
+            background-attachment: fixed;
+            height: 150px;
+            border-radius: 10px;
+        }
+  
+        @keyframes float-left {
+          from {
+            transform: translateX(-100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+  
+        @keyframes float-right {
+          from {
+            transform: translateX(100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+  
+        @keyframes float-bottom {
+          from {
+            transform: translateY(100%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
+      </style>
+
+{% include "shop/footer.html" %} 
+{% endblock %}
+
+{% block js %}
+{% endblock %}

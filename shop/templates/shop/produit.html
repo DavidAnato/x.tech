@@ -1,0 +1,421 @@
+{% extends "shop/base.html "%}
+
+{% block content %}
+    <style>
+        .hidden {
+            display: none;
+        }
+        .form-check-input:checked + .form-check-label {
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+<div class="row">
+  <div class="col-md-12">
+    <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'produit' %}">
+      <div class="card-body row no-gutters align-items-center">
+        <div class="col-md-10">
+          <input id="search" type="search" placeholder="🔎 Que désirez-vous ?" name="item-name" class="form-control form-control-borderless w-100">
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-primary w-100">Recherche</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.querySelector('#search').addEventListener('keydown', function(e) {
+    if (e.keyCode === 13) { // Si l'utilisateur appuie sur la touche "entrée"
+      e.preventDefault(); // Empêche la soumission par défaut du formulaire
+      search();
+    }
+  });
+
+  document.querySelector('button[type="submit"]').addEventListener('click', function(e) {
+    e.preventDefault(); // Empêche la soumission par défaut du formulaire
+    search();
+  });
+
+  function search() {
+    var searchValue = document.querySelector('#search').value.trim(); // Récupère la valeur de la recherche et retire les espaces en début et fin de chaîne
+    if (searchValue.length > 0) { // Vérifie si la valeur de recherche n'est pas vide
+      var searchUrl = window.location.href.split('?')[0] + '?item-name=' + searchValue; // Construit l'URL de recherche avec la valeur de recherche
+      window.location.href = searchUrl; // Redirige l'utilisateur vers l'URL de recherche
+    }
+  }
+</script>
+
+  
+  <form method="get" class="d-block d-md-none p-4 align-items-center" action="{% url 'produit' %}">
+    <label for="type">Filtre:</label>
+    <div class="form-group row">
+      <select class="form-control w-100 col-8 ml-3"  name="item-name" id="type">
+        <option value="">Tous</option>
+        <optgroup label="Types">
+          {% for type in types %}
+            <option value="{{ type.name }}" {% if current_type == type.name %}selected{% endif %}>{{ type.name }}</option>
+          {% endfor %}
+        </optgroup>
+        <optgroup label="Catégories">
+          {% for category in categories %}
+            <option value="{{ category.name }}" {% if current_category == category.name %}selected{% endif %}>{{ category.name }}</option>
+          {% endfor %}
+        </optgroup>
+      </select>   
+      <button type="submit" class="btn btn-primary w-100 col-3">Filtrer</button>
+    </div>
+  </form>
+  
+  
+    <style>
+        .card-img-top:hover {
+            transition: transform 0.3s ease-in-out;
+            transform: scale(1.2);
+        }
+        #filtre{
+          font-size: small;
+        }
+        @media screen and (min-width: 891px) and (max-width: 1000px) {
+
+          #filtre{
+          font-size: x-small;
+          }
+        }
+
+        @media screen and (min-width: 768px) and (max-width: 890px) {
+
+          #filtre{
+          font-size: 7.5px;
+          }
+        }
+</style>
+      
+
+      <div class="row m-4 " id="products">
+
+        <div class="col-md-2 d-none d-md-block" >
+          <form id="filtre" method="get" action="{% url 'produit' %}">
+            <div class="form-group border p-3">
+              <label><h5 class="font-weight-bold" style="font-size: calc(10px + 0.5vw);">Par Type:</h5></label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="item-name" value="" id="type_all">
+                <label class="form-check-label" for="type_all">Tous</label>
+              </div>
+              {% for type in types %}
+                <div class="form-check">
+                  <input class="form-check-input type-checkbox" type="checkbox" name="item-name" value="{{ type.name }}" id="type_{{ type.id }}">
+                  <label class="form-check-label" for="type_{{ type.id }}">{{ type.name }}</label>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="form-group border p-3">
+              <h5 class="font-weight-bold" style="font-size: calc(10px + 0.5vw);">Par catégorie:</h5>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="item-name" value="" id="category_all">
+                <label class="form-check-label" for="category_all">Tous</label>
+              </div>
+              {% for category in categories %}
+                <div class="form-check">
+                  <input class="form-check-input category-checkbox" type="checkbox" name="item-name" value="{{ category.name }}" id="category_{{ category.id }}">
+                  <label class="form-check-label" for="category_{{ category.id }}">{{ category.name }}</label>
+                </div>
+              {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+          </form>
+                 
+        </div>
+        
+
+        <div class="row col-md-10">
+        {% for product in product_object %}
+        <div class="col-md-4 product d-none" style="margin-bottom: 20px;">
+          <div class="card" style="padding-top: 20px;">
+            <a href="../{{product.id}}">
+              <div style="text-align: center;">
+                <img src="../media/{{ product.image }}" alt="{{ product.title }}" class="card-img-top img-fluid mx-auto" style="margin: 15px ; height: 200px; width: 80%; object-fit: contain;">
+              </div>
+            </a>
+            <div class="card-body">
+              <div id="id{{ product.id }}" class="card-title">{{ product.title }}</div>
+              {% if product.prix_promo %}
+              <div style="margin-bottom: 8px;">
+                <div style="text-decoration: line-through; margin-right: 10px; display: inline-block;">{{ product.prix }} F CFA</div>
+                <div style=" font-size: 18px;font-weight: bold; display: inline-block;" class="card-text text-warning">{{ product.prix_promo }} F CFA</div>
+              </div>
+              {% else %}
+              <div style="margin-bottom: 10px;" class="card-text text-warning">{{ product.prix }} F CFA</div>
+              {% endif %}
+              <button id="{{product.id}}" class="btn ted btn-primary" onclick="ajouterAuPanier('{{ product.id }}')" style=" width: 100%;">Ajouter <i class="fas fa-cart-plus"></i></button>
+              <a id="allerAuPanier{{ product.id }}" href="{% url 'panier' %}" class="btn ted btn-warning d-none" style="width: 100%;">Aller au panier <i class="fas fa-shopping-cart"></i></a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+  </div>
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <button style="padding: 0 5px;" id="prev-btn" class="btn btn-primary" disabled>•</button>
+          <button style="padding: 0 5px;" id="next-btn" class="btn btn-primary">•</button>
+        </div>
+    </div>
+    
+    {% include "shop/footer.html" %}
+    
+    <script>
+      // Récupérer les paramètres de la chaîne de requête
+const urlCurrent = new URLSearchParams(window.location.search);
+
+// Sélectionner l'élément de liste déroulante et tous les éléments option
+const select = document.querySelector('#type');
+const options = document.querySelectorAll('#type option');
+
+// Parcourir tous les éléments option et définir l'attribut selected si une correspondance est trouvée
+options.forEach(option => {
+  if (option.value === urlCurrent.get('item-name')) {
+    option.selected = true;
+  }
+});
+
+// Écouter l'événement submit sur le formulaire
+const form = document.querySelector('form');
+form.addEventListener('submit', event => {
+  // Empêcher la soumission par défaut
+  event.preventDefault();
+  
+  // Récupérer les valeurs sélectionnées
+  const itemName = select.value;
+
+  // Construire l'URL de la requête avec les paramètres de filtre sélectionnés
+  const url = window.location.pathname + `?item-name=${itemName}`;
+
+  // Rediriger l'utilisateur vers l'URL de la requête
+  window.location.href = url;
+});
+
+    </script>
+
+    <script>
+      // Sélectionner/désélectionner toutes les cases à cocher pour les types
+      const typeAllCheckbox = document.querySelector('#type_all');
+      const typeCheckboxes = document.querySelectorAll('.type-checkbox');
+      typeAllCheckbox.addEventListener('change', function() {
+        typeCheckboxes.forEach(function(checkbox) {
+          checkbox.checked = typeAllCheckbox.checked;
+        });
+      });
+      
+      // Vérifier si toutes les cases de type sont cochées
+      function areAllTypeCheckboxesChecked() {
+        let allChecked = true;
+        typeCheckboxes.forEach(function(checkbox) {
+          if (!checkbox.checked) {
+            allChecked = false;
+          }
+        });
+        return allChecked;
+      }
+      
+      // Sélectionner/désélectionner la case "Tous" pour les types en fonction des cases de type sélectionnées
+      function updateTypeAllCheckbox() {
+        typeAllCheckbox.checked = areAllTypeCheckboxesChecked();
+      }
+      
+      // Mettre à jour la case "Tous" pour les types lorsqu'une case de type est cochée ou décochée
+      typeCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+          updateTypeAllCheckbox();
+        });
+      });
+      
+      // Sélectionner/désélectionner toutes les cases à cocher pour les catégories
+      const categoryAllCheckbox = document.querySelector('#category_all');
+      const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+      categoryAllCheckbox.addEventListener('change', function() {
+        categoryCheckboxes.forEach(function(checkbox) {
+          checkbox.checked = categoryAllCheckbox.checked;
+        });
+      });
+      
+      // Vérifier si toutes les cases de catégorie sont cochées
+      function areAllCategoryCheckboxesChecked() {
+        let allChecked = true;
+        categoryCheckboxes.forEach(function(checkbox) {
+          if (!checkbox.checked) {
+            allChecked = false;
+          }
+        });
+        return allChecked;
+      }
+      
+      // Sélectionner/désélectionner la case "Tous" pour les catégories en fonction des cases de catégorie sélectionnées
+      function updateCategoryAllCheckbox() {
+        categoryAllCheckbox.checked = areAllCategoryCheckboxesChecked();
+      }
+      
+      // Mettre à jour la case "Tous" pour les catégories lorsqu'une case de catégorie est cochée ou décochée
+      categoryCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+          updateCategoryAllCheckbox();
+        });
+      });
+      
+      // Mettre à jour les cases "Tous" pour les types et les catégories lorsqu'une case de type ou de catégorie est cochée ou décochée
+      typeCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+          updateTypeAllCheckbox();
+          updateCategoryAllCheckbox();
+        });
+      });
+      categoryCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+          updateTypeAllCheckbox();
+          updateCategoryAllCheckbox();
+        });
+      });
+      
+      
+        // Fonction pour extraire les paramètres d'URL de la requête
+        function getParamsFromUrl() {
+          const searchParams = new URLSearchParams(window.location.search);
+          const params = {};
+          for (const [key, value] of searchParams.entries()) {
+            if (params[key]) {
+              params[key].push(value);
+            } else {
+              params[key] = [value];
+            }
+          }
+          return params;
+        }
+      
+        // Cocher les cases à cocher en fonction des paramètres d'URL
+        function checkCheckboxesFromUrlParams() {
+          const params = getParamsFromUrl();
+          const typeCheckboxes = document.querySelectorAll('.type-checkbox');
+          const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+          typeCheckboxes.forEach(function(checkbox) {
+            if (params['item-name'] && params['item-name'].includes(checkbox.value)) {
+              checkbox.checked = true;
+            } else {
+              checkbox.checked = false;
+            }
+          });
+          categoryCheckboxes.forEach(function(checkbox) {
+            if (params['item-name'] && params['item-name'].includes(checkbox.value)) {
+              checkbox.checked = true;
+            } else {
+              checkbox.checked = false;
+            }
+          });
+        }
+      
+        // Appeler la fonction pour cocher les cases à cocher après le chargement de la page
+        window.addEventListener('load', checkCheckboxesFromUrlParams);
+      </script>
+      
+{% endblock %}
+
+{% block js %}
+    <script>
+        // Récupération du panier depuis le stockage de navigateur
+        var panier = JSON.parse(localStorage.getItem('panier')) || {};
+    
+        // Fonction pour ajouter un produit au panier
+        function ajouterAuPanier(productId) {
+            // Envoi de la requête AJAX pour ajouter le produit au panier
+            $.ajax({
+                url: '/panier/add/' + productId + '/',
+                type: 'POST',
+                data: {
+                    'product_id': productId,
+                    'quantity': 1,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    $("#" + productId).prop("disabled", true);
+                    $("#allerAuPanier" + productId).removeClass("d-none");
+                    // Cache le bouton
+                    $("#" + productId).hide();
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            // Variables
+            var products = $("#products .product");
+            var productCount = products.length;
+            var productsPerPage = 12;
+            var pageCount = Math.ceil(productCount / productsPerPage);
+            var currentPage = 1;
+
+            // Show first page and disable prev button
+            products.slice(0, productsPerPage).removeClass("d-none");
+            $("#prev-btn").prop("disabled", true);
+
+            // Next button click event
+            $("#next-btn").click(function() {
+                // Calculate next page
+                var nextPage = currentPage + 1;
+                // Show products on next page and hide previous ones
+                products.slice((nextPage - 1) * productsPerPage, nextPage * productsPerPage).removeClass("d-none");
+                products.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage).addClass("d-none");
+                // Enable prev button if necessary
+                if (nextPage > 1) {
+                $("#prev-btn").prop("disabled", false);
+                }
+                // Disable next button if necessary
+                if (nextPage === pageCount) {
+                $(this).prop("disabled", true);
+                }
+                // Update current page
+                currentPage = nextPage;
+            });
+
+            // Prev button click event
+            $("#prev-btn").click(function() {
+                // Calculate previous page
+                var prevPage = currentPage - 1;
+                // Show products on previous page and hide current ones
+                products.slice((prevPage - 1) * productsPerPage, prevPage * productsPerPage).removeClass("d-none");
+                products.slice(currentPage * productsPerPage - productsPerPage, currentPage * productsPerPage).addClass("d-none");
+                // Enable next button if necessary
+                if (prevPage < pageCount) {
+                $("#next-btn").prop("disabled", false);
+                }
+                // Disable prev button if necessary
+                if (prevPage === 1) {
+                $(this).prop("disabled", true);
+                }
+                // Update current page
+                currentPage = prevPage;
+            });
+
+            // Disable next button on last page
+            if (currentPage === pageCount) {
+                $("#next-btn").prop("disabled", true);
+            }
+            });
+
+    </script>
+<script>
+  // Récupère la valeur de l'attribut "item-name" ou "categorie" dans l'URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const selectedParam = urlParams.get('item-name') || urlParams.get('categorie');
+
+  // Ajoute la classe "active" à l'élément correspondant
+  const listGroupItems = document.querySelectorAll('.list-group-item');
+  listGroupItems.forEach(item => {
+    const hrefParams = new URLSearchParams(item.getAttribute('href').split('?')[1]);
+    const paramValue = hrefParams.get('item-name') || hrefParams.get('categorie');
+    if (paramValue === selectedParam) {
+      item.classList.add('active');
+    }
+  });
+</script>
+
+        
+{% endblock %}

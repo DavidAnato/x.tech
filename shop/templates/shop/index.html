@@ -1,0 +1,306 @@
+{% extends "shop/base.html "%}
+
+{% block content %}
+<div class="container-fluid">
+  <h3 class="text-center mt-3">Nouveautés</h3>
+  <hr>
+  <div id="nouveautes-carousel" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+      {% for produit in nouveautes %}
+      <li data-target="#nouveautes-carousel" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+      {% endfor %}
+    </ol>
+    <div class="carousel-inner">
+      {% for produit in nouveautes %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %} align-items-center text-center">
+        <a href="../{{produit.id}}">
+          <img class="w-auto" src="{{ produit.image.url }}" alt="{{ produit.title }}" style="height: calc(100px + 20vw); width: auto;">
+        </a>
+        <div class="carousel-caption d-none d-md-block text-white" style="background-color:rgba(0, 0, 0, 0.5);">
+          <h4>{{ produit.title }}</h4>
+          {% if produit.prix_promo %}
+          <p><span class="text-warning" style="text-decoration: line-through">{{ produit.prix }} F CFA</span> <span style="font-size: 20px;">{{ produit.prix_promo }} F CFA</span></p>
+          {% else %}
+          <p><span style="font-size: 20px;">{{ produit.prix }} F CFA</span></p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <a class="carousel-control-prev" href="#nouveautes-carousel" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Précédent</span>
+    </a>
+    <a class="carousel-control-next" href="#nouveautes-carousel" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Suivant</span>
+    </a>
+  </div>
+</div>
+<hr>
+<style>
+
+.carousel-caption {
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+
+.carousel-indicators li {
+  background-color: #bbb;
+  border: none;
+  height: 12px;
+  width: 12px;
+  margin: 0 2px;
+}
+
+.carousel-indicators .active {
+  background-color: #007bff;
+}
+</style>
+
+<script>
+$(document).ready(function(){
+  // initialisation du carousel
+  $('#nouveautes-carousel').carousel({
+    interval: 5000, // temps en millisecondes entre chaque slide
+    pause: 'hover' // pause au survol de la souris
+  });
+});
+</script>
+
+
+    
+    <style>
+        .card-img-top:hover {
+            transition: transform 0.3s ease-in-out;
+            transform: scale(1.2);
+        }
+        
+    </style>
+    <div id="content">
+  
+    <div class="row m-4" id="products">
+        {% for product in product_object %}
+        <div class="col-md-4 product d-none" style="margin-bottom: 20px;">
+          <div class="card" style="padding-top: 20px;">
+            <a href="../{{product.id}}">
+              <div style="text-align: center;">
+                <img src="../media/{{ product.image }}" alt="{{ product.title }}" class="card-img-top img-fluid mx-auto" style="margin: 15px ; height: 200px; width: 80%; object-fit: contain;">
+              </div>
+            </a>
+            <div class="card-body">
+              <div id="id{{ product.id }}" class="card-title">{{ product.title }}</div>
+              {% if product.prix_promo %}
+              <div style="margin-bottom: 8px;">
+                <div style="text-decoration: line-through; margin-right: 10px; display: inline-block;">{{ product.prix }} F CFA</div>
+                <div style=" font-size: 18px;font-weight: bold; display: inline-block;" class="card-text text-warning">{{ product.prix_promo }} F CFA</div>
+              </div>
+              {% else %}
+              <div style="margin-bottom: 10px;" class="card-text text-warning">{{ product.prix }} F CFA</div>
+              {% endif %}
+              <button id="{{product.id}}" class="btn ted btn-primary" onclick="ajouterAuPanier('{{ product.id }}')" style="width: 100%;">Ajouter <i class="fas fa-cart-plus"></i></button>
+              <a id="allerAuPanier{{ product.id }}" href="{% url 'panier' %}" class="btn ted btn-warning d-none" style="width: 100%;">Aller au panier <i class="fas fa-shopping-cart"></i></a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <button id="prev-btn" class="btn btn-primary" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+            </svg>
+          </button>
+          <a href="#products" class="btn btn-primary">•</a>
+          <button id="next-btn" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+          </button>
+        </div>
+    </div>
+    <hr>
+    
+    {% include "shop/promo_products.html" %}
+
+    <div class="d-none d-md-block mr-4">
+      <div class="m-4">
+        <div class="row" style="display: flex; flex-wrap: nowrap;">
+          <div class="col-md-4 m-1" style="aspect-ratio: 2 / 1; width: calc(100px + 10vw); position: relative; overflow: hidden;">
+            <div class="card" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+            <a href="/produit/?item-name=Ordinateurs Bureautiques" class="text-light" style="text-shadow: 0px 0px 7px rgba(0, 0, 0, 0.9); font-size: xx-large;font-family: Arial Black, Arial, sans-serif; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; background: url('/static/pcBureau.png') center no-repeat; background-size: cover; height: 100%; width: 100%; text-align: center;">Ordinateur Bureautique</a>
+          </div>
+          <div class="col-md-4 m-1" style="aspect-ratio: 2 / 1; width: calc(100px + 10vw); position: relative; overflow: hidden;">
+            <div class="card" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+            <a href="/produit/?item-name=Hybrides 2 en 1" class="text-light" style="text-shadow: 0px 0px 7px rgba(0, 0, 0, 0.9); font-size: xx-large;font-family: Arial Black, Arial, sans-serif; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; background: url('/static/pcHybride.png') center no-repeat; background-size: cover; height: 100%; width: 100%; text-align: center;">Hybride 2 en 1</a>
+          </div>
+          <div class="col-md-4 m-1" style="aspect-ratio: 2 / 1; width: calc(100px + 10vw); position: relative; overflow: hidden;">
+            <div class="card" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+            <a href="/produit/?item-name=Workstation" class="text-light" style="text-shadow: 0px 0px 7px rgba(0, 0, 0, 0.9); font-size: xx-large;font-family: Arial Black, Arial, sans-serif; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; background: url('/static/pcPortableBureautique.png') center no-repeat; background-size: cover; height: 100%; width: 100%; text-align: center;">Workstation</a>
+          </div>
+        </div>
+        <div class="row" style="display: flex; flex-wrap: nowrap;">
+          <div class="col-md-4 m-1" style="aspect-ratio: 2 / 1; width: calc(100px + 10vw); position: relative; overflow: hidden;">
+            <div class="card" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+            <a href="/produit/?item-name=Gamer" class="text-light" style="text-shadow: 0px 0px 7px rgba(0, 0, 0, 0.9); font-size: xx-large;font-family: Arial Black, Arial, sans-serif; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; background: url('/static/pcPortableGamer.png') center no-repeat; background-size: cover; height: 100%; width: 100%; text-align: center;">Gamer</a>
+          </div>          
+          <div class="col-md-4 m-1" style="aspect-ratio: 2 / 1; width: calc(100px + 10vw); position: relative; overflow: hidden;">
+            <div class="card" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+            <a href="/produit/?item-name=Ecran Tactile" class="text-light" style="text-shadow: 0px 0px 7px rgba(0, 0, 0, 0.9); font-size: xx-large;font-family: Arial Black, Arial, sans-serif; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; background: url('/static/pcPortableTactile.png') center no-repeat; background-size: cover; height: 100%; width: 100%; text-align: center;">Ecran Tactile</a>
+          </div>
+          <div class="col-md-4 m-1" style="aspect-ratio: 2 / 1; width: calc(100px + 10vw); position: relative; overflow: hidden;">
+            <div class="card" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+            <a href="/produit/?item-name=Ultraportables" class="text-light" style="text-shadow: 0px 0px 7px rgba(0, 0, 0, 0.9); font-size: xx-large;font-family: Arial Black, Arial, sans-serif; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; background: url('/static/pcUltraportable.png') center no-repeat; background-size: cover; height: 100%; width: 100%; text-align: center;">Ultraportables</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <hr>
+   
+  <div class="p-5 d-none d-md-block mt-0">
+    <h3 class="font-weight-bold">Autres Produits</h3>
+    <hr>
+      <div class="row">
+      <a href="/produit/?item-name=Gaming" class="a-md col-md-3 text-center align-items-center text-dark"><img src="/static/Gaming.png" style="max-height:200px; max-width: 180px;"   alt="Gaming"> <hr> <h4>Gaming</h4><p class="text-secondary">Console, Manette, PC Gamer, etc</p> </a>
+      <a href="/produit/?item-name=Telephones" class="a-md col-md-3 text-center align-items-center text-dark"><img src="/static/Telephone.png" style="max-height:200px; max-width: 180px;"   alt="Stockage"> <hr> <h4>Téléphones</h4><p class="text-secondary">iPhone, Samsung ,etc</p> </a>
+      <a href="/produit/?item-name=Accessoires" class="a-md col-md-3 text-center align-items-center text-dark"><img src="/static/Accessoires.png" style="max-height:200px; max-width: 180px;"   alt="Accesoire"> <hr> <h4>Accessoires</h4><p class="text-secondary">Souris ,Clavier, Ecouteur</p> </a>
+      <a href="/produit/?item-name=Autres" class="a-md col-md-3 text-center align-items-center text-dark"><img src="/static/Autres.png" style="max-height:200px; max-width: 180px;"   alt="Sac"> <hr> <h4>Autres</h4><p class="text-secondary">Sac PC, Support PC, etc</p> </a>
+    </div>
+  </div>
+
+    <div class="row p-5 d-none d-block d-md-none">
+      <h3>Autres Produits</h3>
+      <hr>
+      <a href="/produit/?item-name=Gaming" class="a-d col-md-3 text-center align-items-center btn btn-light" style="border-radius: 0px; border: solid 1px rgba(128, 128, 128, 0.3);"><h4>Gaming</h4><p class="text-secondary">Console, Manette, PC Gamer, etc</p> </a>
+      <a href="/produit/?item-name=Telephones" class="a-d col-md-3 text-center align-items-center btn btn-light" style="border-radius: 0px; border: solid 1px rgba(128, 128, 128, 0.3);"><h4>Téléphones</h4><p class="text-secondary">iPhone, Samsung ,etc</p> </a>
+      <a href="/produit/?item-name=Accessoires" class="a-d col-md-3 text-center align-items-center btn btn-light" style="border-radius: 0px; border: solid 1px rgba(128, 128, 128, 0.3);"><h4>Accessoires</h4><p class="text-secondary">Souris ,Clavier, Ecouteur</p> </a>
+      <a href="/produit/?item-name=Autres" class="a-d col-md-3 text-center align-items-center btn btn-light" style="border-radius: 0px; border: solid 1px rgba(128, 128, 128, 0.3);"><h4>Autres</h4><p class="text-secondary">Sac PC, Support PC, etc</p> </a>
+    </div>
+
+    <hr>
+
+    <style>
+      .a-md:hover{
+        border: solid 1px rgba(128, 128, 128, 0.3);
+      }
+    </style>
+
+
+  <div class="container mt-4">
+    <h3 class="font-weight-bold">Articles</h3>
+    <hr>
+    <div class="row " id="article">
+      {% for article in articles|slice:":3" %}
+        <div class="col-md-4">
+          <div class="card mb-1 box-shadow" >
+            <h5 class="card-title m-3" style="min-height:calc(40px + 3vw); font-size: calc(16px + 0.3vw); font-weight: bold;">{{ article.titre }}</h5>
+            <a href="{% url 'article_detail' article.id %}" style="background: url('{{ article.image.url }}') center no-repeat; height: 150px; background-size: cover;"></a>
+            <div class="card-body">
+              <p class="card-text text-muted" style="min-height: 100px;">{{ article.contenu|truncatechars:200 }}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a href="{% url 'article_detail' article.id %}" class="btn btn-sm btn-primary">Voir</a>
+                </div>
+                <small class="text-muted">{{ article.date_creation|date:"d N Y - H:i" }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+    <hr>
+      {% empty %}
+        <p class="mx-1">Aucun article n'est disponible.</p>
+      {% endfor %}
+    <hr>
+    </div>
+    <a href="{% url 'articles' %}"><h4>Voir tout les articles</h4></a>
+  </div>
+
+  <!-- {% include "shop/comments_show.html" %} -->
+  </div>
+  {% include "shop/footer.html" %}
+
+{% endblock %}
+
+{% block js %}
+    <script>
+      // Récupération du panier depuis le stockage de navigateur
+      var panier = JSON.parse(localStorage.getItem('panier')) || {};
+
+      function ajouterAuPanier(productId) {
+      // Envoi de la requête AJAX pour ajouter le produit au panier
+      $.ajax({
+          url: '/panier/add/' + productId + '/',
+          type: 'POST',
+          data: {
+              'product_id': productId,
+              'quantity': 1,
+              'csrfmiddlewaretoken': '{{ csrf_token }}'
+          },
+          success: function (response) {
+              $("#" + productId).prop("disabled", true);
+              $("#allerAuPanier" + productId).removeClass("d-none");
+              // Cache le bouton
+              $("#" + productId).hide();
+          }
+      });
+  }
+
+
+        $(document).ready(function() {
+          // Variables
+          var products = $("#products .product");
+          var productCount = products.length;
+          var productsPerPage = 3;
+          var pageCount = Math.ceil(productCount / productsPerPage);
+          var currentPage = 1;
+
+          // Show first page and disable prev button
+          products.slice(0, productsPerPage).removeClass("d-none");
+          $("#prev-btn").prop("disabled", true);
+
+          // Next button click event
+          $("#next-btn").click(function() {
+            // Calculate next page
+            var nextPage = currentPage + 1;
+            // Show products on next page and hide previous ones
+            products.slice((nextPage - 1) * productsPerPage, nextPage * productsPerPage).removeClass("d-none");
+            products.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage).addClass("d-none");
+            // Enable prev button if necessary
+            if (nextPage > 1) {
+              $("#prev-btn").prop("disabled", false);
+            }
+            // Disable next button if necessary
+            if (nextPage === pageCount) {
+              $(this).prop("disabled", true);
+            }
+            // Update current page
+            currentPage = nextPage;
+          });
+
+          // Prev button click event
+          $("#prev-btn").click(function() {
+            // Calculate previous page
+            var prevPage = currentPage - 1;
+            // Show products on previous page and hide current ones
+            products.slice((prevPage - 1) * productsPerPage, prevPage * productsPerPage).removeClass("d-none");
+            products.slice(currentPage * productsPerPage - productsPerPage, currentPage * productsPerPage).addClass("d-none");
+            // Enable next button if necessary
+            if (prevPage < pageCount) {
+              $("#next-btn").prop("disabled", false);
+            }
+            // Disable prev button if necessary
+            if (prevPage === 1) {
+              $(this).prop("disabled", true);
+            }
+            // Update current page
+            currentPage = prevPage;
+          });
+        });
+
+    </script>
+        
+{% endblock %}

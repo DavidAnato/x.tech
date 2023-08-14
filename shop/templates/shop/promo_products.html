@@ -1,0 +1,82 @@
+{% block content %}
+<style>
+  a:hover{
+    text-decoration: none;
+  }
+  #promo {
+  background: linear-gradient(-60deg, rgb(255, 81, 177), rgb(63, 169, 255));
+  position: relative;
+  animation-name: float-in;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-direction: normal;
+  opacity: 0.5;
+  transform: translateY(-50px);
+}
+
+@keyframes float-in {
+  from {
+    opacity: 0.5;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.text-black{
+  color: #000;
+}
+</style>
+<div id="promo" class="container-fluid">
+  <a href="/produit/?item-name=promo"><h2 class="text-center text-black m-4 pt-4">Produits en Promo 🎁</h2></a>
+  <hr class="bg-primary">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10 col-12">
+      <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+          {% for product in product_promo %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %} mb-3">
+              <div class="d-flex justify-content-center">
+                <a href="../{{product.id}}" class="p-3" style="aspect-ratio: 2 / 1; width: 50%; display: flex; align-items: center; justify-content: center; border-radius:calc(10px + 10vw); background:  url('{{ product.image.url }}')  center no-repeat; background-size:calc(100px + 7vw); margin-right: 0px;"></a>
+                <div class="card-body p-2" style="width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                  <h3 style="font-size: calc(16px + 1vw); font-weight: bold;" class="card-title">{{ product.title }}</h3>
+                  <p class="card-text font-weight-bold mb-2">
+                    <div class="d-flex mb-4">
+                        <div style="font-size: calc(8px + 0.7vw); text-decoration: line-through red; margin-right: 10px; display: inline-block;" class="text-warning">{{ product.prix }} F CFA</div>
+                        <div style="font-size: calc(9px + 1vw);" class="font-weight-bold">{{ product.prix_promo }} F CFA</div>
+                    </div>
+                  <a href="../{{product.id}}" class="btn btn-primary" style="width: 70%; font-size: calc(10px + 1.2vw);">Détails</a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Précédent</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Suivant</span>
+      </a>
+    </div>
+ </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+  $(document).ready(function(){
+    $('#carouselExampleControls').carousel({
+      interval: 3000
+    });
+  });
+</script>
+{% endblock %}

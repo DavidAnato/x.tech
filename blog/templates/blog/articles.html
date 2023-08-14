@@ -1,0 +1,143 @@
+{% extends "shop/base.html" %}
+
+
+{% block content %}
+  <div class="container-fluid">
+    <h1 class="my-4 m-4">Articles</h1>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="list-group mb-4">
+          <a href="{% url 'articles' %}" class="list-group-item">Tous</a>
+          {% for categorie in categories %}
+            <a href="?categorie={{ categorie.id }}" class="list-group-item">{{ categorie.nom }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="row" id="article">
+          {% for article in articles %}
+            <div class="col-md-5">
+              <div class="card mb-4 box-shadow" >
+                <h5 class="card-title m-3" style="min-height:calc(30px + 2vw); font-size: calc(16px + 0.3vw); font-weight: bold;">{{ article.titre }}</h5>
+                <a href="{% url 'article_detail' article.id %}" style="background: url('{{ article.image.url }}') center no-repeat; height: 150px; background-size: cover;"></a>
+                <div class="card-body">
+                  <p class="card-text text-muted" style="min-height: 120px;">{{ article.contenu|truncatechars:200 }}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <a href="{% url 'article_detail' article.id %}" class="btn btn-sm btn-primary">Voir</a>
+                    </div>
+                    <small class="text-muted">{{ article.date_creation|date:"d N Y - H:i" }}</small>
+                  </div>
+                  <!-- <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">{{ article.categorie }} | Par : {{ article.auteur }}</small>
+                    {% if article.nb_vues < 2 %}
+                    <small class=" text-primary">{{ article.nb_vues}} vue</i></small>
+                    {% else %}
+                    <small class=" text-primary">{{ article.nb_vues}} vues</i></small>
+                    {% endif %}
+                  </div> -->
+                </div>
+
+              </div>
+            </div>
+          {% empty %}
+            <p>Aucun article n'est disponible.</p>
+          {% endfor %}
+        </div>
+        <div class="row">
+          <div class="col-md-10 text-center">
+            <button id="prev-btn" class="btn btn-primary" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+              </svg>
+            </button>
+            <a href="#article" class="btn btn-primary">•</a>
+            <button id="next-btn" class="btn btn-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      // Variables
+      var article = $("#article > div");
+      var articleCount = article.length;
+      var articlePerPage = 4;
+      var pageCount = Math.ceil(articleCount / articlePerPage);
+      var currentPage = 1;
+
+      // Show first page and disable prev button
+      article.slice(0, articlePerPage).removeClass("d-none");
+      $("#prev-btn").prop("disabled", true);
+
+      // Next button click event
+      $("#next-btn").click(function() {
+        // Calculate next page
+        var nextPage = currentPage + 1;
+        // Show articles on next page and hide previous ones
+        article.slice((nextPage - 1) * articlePerPage, nextPage * articlePerPage).removeClass("d-none");
+        article.slice((currentPage - 1) * articlePerPage, currentPage * articlePerPage).addClass("d-none");
+        // Enable prev button if necessary
+        if (nextPage > 1) {
+          $("#prev-btn").prop("disabled", false);
+        }
+        // Disable next button if necessary
+        if (nextPage === pageCount) {
+          $(this).prop("disabled", true);
+        }
+        // Update current page
+        currentPage = nextPage;
+      });
+
+      // Prev button click event
+      $("#prev-btn").click(function() {
+        // Calculate previous page
+        var prevPage = currentPage - 1;
+        // Show articles on previous page and hide current ones
+        article.slice((prevPage - 1) * articlePerPage, prevPage * articlePerPage).removeClass("d-none");
+        article.slice(currentPage * articlePerPage, (currentPage + 1) * articlePerPage).addClass("d-none");
+        // Enable next button if necessary
+        if (prevPage < pageCount) {
+          $("#next-btn").prop("disabled", false);
+        }
+        // Disable prev button if necessary
+        if (prevPage === 1) {
+          $(this).prop("disabled", true);
+        }
+        // Update current page
+        currentPage = prevPage;
+      });
+
+      // Disable next button if there is only one page
+      if (pageCount === 1) {
+        $("#next-btn").prop("disabled", true);
+      }
+    });
+
+    </script>
+    <script>
+      // Récupère la valeur de l'attribut "categorie" dans l'URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedCategorie = urlParams.get('categorie');
+    
+      // Ajoute la classe "active" à l'élément de catégorie correspondant
+      const categorieElements = document.querySelectorAll('.list-group-item');
+      categorieElements.forEach(element => {
+        const hrefParams = new URLSearchParams(element.getAttribute('href').split('?')[1]);
+        const categorieId = hrefParams.get('categorie');
+        if (categorieId === selectedCategorie) {
+          element.classList.add('active');
+        }
+      });
+    </script>
+    
+    {% include "shop/footer.html" %}
+
+  {% endblock %}

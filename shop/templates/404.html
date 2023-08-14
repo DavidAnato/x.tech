@@ -1,0 +1,41 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3 text-center">
+      <h1 class="display-4">Erreur 404</h1>
+      <p class="lead">Désolé, la page que vous cherchez est introuvable.</p>
+      <hr>
+      <p class="lead">Vous serez redirigé automatiquement vers la page d'accueil dans quelques secondes...</p>
+      <a href="{% url 'home' %}" class="btn btn-primary">Retourner à l'accueil</a>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript pour la redirection automatique vers la page d'accueil -->
+<script>
+  setTimeout(function() {
+    window.location.href = "{% url 'home' %}";
+  }, 7000);
+</script>
+
+<style>
+  /* Animation CSS pour le titre "Erreur 404" */
+  .display-4 {
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+</style>
+{% endblock %}
